@@ -26,7 +26,7 @@ CREATE TABLE user_info (
 CREATE TABLE rooms (
   id BIGSERIAL UNIQUE,
   roomName VARCHAR(100),
-  totalNumberReviews INT NOT NULL,
+  totalNumberReviews SMALLINT NOT NULL,
   accuracy SMALLINT NOT NULL,
   communication SMALLINT NOT NULL,
   cleanliness SMALLINT NOT NULL,

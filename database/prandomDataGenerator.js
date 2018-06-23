@@ -2,7 +2,6 @@ const fs = require('fs');
 const faker = require('faker');
 const path = require('path');
 
-
 // ____________________user_info_______________
 // const userInfo = function (i) {
 //   const randomName = faker.name.findName();
@@ -36,10 +35,12 @@ let id,
   value,
   score,
   userId,
-  roomId;
+  roomId,
+  roomName,
+  totalNumberReviews;
 
-const singleLine = () => {
-  text = faker.lorem.sentence();
+const reviewLine = () => {
+  text = faker.lorem.paragraph();
   date = generateDateString();
   accuracy = faker.random.number({ min: 1, max: 5 });
   communication = faker.random.number({ min: 1, max: 5 });
@@ -53,27 +54,46 @@ const singleLine = () => {
   return `${text},${date},${accuracy},${communication},${cleanliness},${location},${checkIn},${value},${score},${userId},${roomId}`;
 };
 
-function writeOneMillionTimes(writer) {
+const roomLine = () => {
+  roomName = faker.lorem.word();
+  totalNumberReviews = faker.random.number({ min: 1, max: 200 });
+  accuracy = faker.random.number({ min: 1, max: 5 });
+  communication = faker.random.number({ min: 1, max: 5 });
+  cleanliness = faker.random.number({ min: 1, max: 5 });
+  location = faker.random.number({ min: 1, max: 5 });
+  checkIn = faker.random.number({ min: 1, max: 5 });
+  value = faker.random.number({ min: 1, max: 5 });
+  return `${roomName},${totalNumberReviews},${accuracy},${communication},${cleanliness},${location},${checkIn},${value}`;
+};
+
+const testLine = () => {
+  // const text = faker.lorem.paragraph().replace(/(\r\n|\n|\r)/gm,'');
+  const text = faker.lorem.paragraph();
+  return `${text}`;
+};
+
+function writeNTimes(writer, times) {
   let i = 0;
   write();
   function write() {
     let ok = true;
     do {
-      const finalLine = `${i},${singleLine()}\n`;
+      const finalLine = `${i},${reviewLine()}\n`;
       if (i % 500 === 0) {
         console.log('chunk', i);
       }
-      if (i === 1000000) {
+      if (i === times) {
         writer.write(finalLine);
         writer.end();
       } else {
         ok = writer.write(finalLine);
       }
       i++;
-    } while (i < 1000000 && ok);
-    if (i < 1000000) {
+    } while (i < times && ok);
+    if (i < times) {
       writer.once('drain', write);
     }
   }
 }
-writeOneMillionTimes(fs.createWriteStream('reviews.csv'));
+writeNTimes(fs.createWriteStream('reviews.csv'), 50000000);
+// console.log(reviewLine());
