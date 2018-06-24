@@ -5,6 +5,9 @@
 npm
 npm-debug.log
 node_modules/
+mconfig.js
+config.js
+pgconfig.js
 
 pids
 *.pid

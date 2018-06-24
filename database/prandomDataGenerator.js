@@ -2,20 +2,6 @@ const fs = require('fs');
 const faker = require('faker');
 const path = require('path');
 
-// ____________________user_info_______________
-// const userInfo = function (i) {
-//   const randomName = faker.name.findName();
-//   const randomUrl = `https://s3-us-west-1.amazonaws.com/nappbnbreviews/portait${Math.floor(Math.random() * 348)}.jpeg`;
-//   return `${i},${randomName},${randomUrl}\n`;
-// };
-
-// for (let i = 0; i < 1000000; i++) {
-//   fs.appendFileSync('userinfo.csv', userInfo(i), (err) => {
-//     if (err) throw err;
-//     console.log('Saved!');
-//   });
-// }
-
 const generateInteger = (max = 1, min = 0) => Math.random() * ((max + 1) - min) + min;
 const generateDateString = (maxDate = '2020-12-31', minDate = '1990-1-1') => {
   const startTime = new Date(minDate).getTime();
@@ -37,7 +23,11 @@ let id,
   userId,
   roomId,
   roomName,
-  totalNumberReviews;
+  totalNumberReviews,
+  user,
+  room,
+  username,
+  avatar;
 
 const reviewLine = () => {
   text = faker.lorem.paragraph();
@@ -48,14 +38,14 @@ const reviewLine = () => {
   location = faker.random.number({ min: 1, max: 5 });
   checkIn = faker.random.number({ min: 1, max: 5 });
   value = faker.random.number({ min: 1, max: 5 });
-  userId = faker.random.number({ min: 0, max: 1000000 });
-  roomId = faker.random.number({ min: 0, max: 10000000 });
   score = Math.floor((accuracy + communication + cleanliness + location + checkIn + value) / 6);
-  return `${text},${date},${accuracy},${communication},${cleanliness},${location},${checkIn},${value},${score},${userId},${roomId}`;
+  user = faker.random.number({ min: 0, max: 1000000 });
+  room = faker.random.number({ min: 0, max: 10000000 });
+  return `${text},${date},${accuracy},${communication},${cleanliness},${location},${checkIn},${value},${score},${user},${room}`;
 };
 
 const roomLine = () => {
-  roomName = faker.lorem.word();
+  roomName = faker.commerce.productName();
   totalNumberReviews = faker.random.number({ min: 1, max: 200 });
   accuracy = faker.random.number({ min: 1, max: 5 });
   communication = faker.random.number({ min: 1, max: 5 });
@@ -63,27 +53,40 @@ const roomLine = () => {
   location = faker.random.number({ min: 1, max: 5 });
   checkIn = faker.random.number({ min: 1, max: 5 });
   value = faker.random.number({ min: 1, max: 5 });
+  score = Math.floor((accuracy + communication + cleanliness + location + checkIn + value) / 6);
   return `${roomName},${totalNumberReviews},${accuracy},${communication},${cleanliness},${location},${checkIn},${value}`;
 };
 
-const testLine = () => {
-  // const text = faker.lorem.paragraph().replace(/(\r\n|\n|\r)/gm,'');
-  const text = faker.lorem.paragraph();
-  return `${text}`;
+const userLine = () => {
+  const randomName = faker.name.findName();
+  const randomUrl = `https://s3-us-west-1.amazonaws.com/nappbnbreviews/portait${Math.floor(Math.random() * 348)}.jpeg`;
+  return `${randomName},${randomUrl}\n`;
 };
 
-function writeNTimes(writer, times) {
+const headers = {
+  reviews: 'id,text,date,accuracy,communication,cleanliness,location,checkIn,value,score,user,room\n',
+  rooms: 'id,name,accuracy,communication,cleanliness,location,checkIn,value,score\n',
+  users: 'id, username, avatar\n',
+};
+
+const startTime = new Date().toTimeString();
+function writeNTimes(writer, header, times) {
   let i = 0;
   write();
   function write() {
     let ok = true;
     do {
       const finalLine = `${i},${reviewLine()}\n`;
-      if (i % 500 === 0) {
+      if (i % 500000 === 0) {
         console.log('chunk', i);
       }
+      if (i === 0) {
+        ok = writer.write(header);
+      }
       if (i === times) {
+        const endTime = new Date().toTimeString();
         writer.write(finalLine);
+        console.log(startTime, endTime);
         writer.end();
       } else {
         ok = writer.write(finalLine);
@@ -95,5 +98,8 @@ function writeNTimes(writer, times) {
     }
   }
 }
-writeNTimes(fs.createWriteStream('reviews.csv'), 50000000);
-// console.log(reviewLine());
+// writeNTimes(fs.createWriteStream('reviews.csv'), headers.reviews, 50000000);
+// writeNTimes(fs.createWriteStream('rooms.csv'), headers.rooms, 10000000);
+writeNTimes(fs.createWriteStream('users.csv'), headers.users, 1000000);
+
+// 'id,text,date,accuracy,communication,cleanliness,location,checkIn,value,score,user,room'
