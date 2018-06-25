@@ -1,7 +1,5 @@
 const pg = require('pg');
 const conf = require('./pgconfig');
-const path = require('path');
-
 
 const pool = new pg.Pool(conf);
 
