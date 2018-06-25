@@ -85,8 +85,8 @@ function writeNTimes(writer, header, times) {
       }
       if (i === times) {
         const endTime = new Date().toTimeString();
-        writer.write(finalLine);
         console.log(startTime, endTime);
+        writer.write(finalLine);
         writer.end();
       } else {
         ok = writer.write(finalLine);
@@ -100,6 +100,4 @@ function writeNTimes(writer, header, times) {
 }
 // writeNTimes(fs.createWriteStream('reviews.csv'), headers.reviews, 50000000);
 // writeNTimes(fs.createWriteStream('rooms.csv'), headers.rooms, 10000000);
-writeNTimes(fs.createWriteStream('users.csv'), headers.users, 1000000);
-
-// 'id,text,date,accuracy,communication,cleanliness,location,checkIn,value,score,user,room'
+// writeNTimes(fs.createWriteStream('users.csv'), headers.users, 1000000);

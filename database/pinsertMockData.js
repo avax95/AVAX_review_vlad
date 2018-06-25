@@ -9,12 +9,13 @@ const reveiwsPath = path.join(__dirname, '/reviews.csv');
 const roomsPath = path.join(__dirname, '/rooms.csv');
 const testPath = path.join(__dirname, '/test.csv');
 
-const query = `COPY user_info (id,username,avatar) FROM '${usersPath}' DELIMITER ','`;
+const insertUsers = `COPY user_info (id,username,avatar) FROM '${usersPath}' DELIMITER ','`;
 const insertReviews = `COPY single_review FROM '${reveiwsPath}' DELIMITER ','`;
 const insertRooms = `COPY rooms FROM '${roomsPath}' DELIMITER ','`;
-const test = `COPY test FROM '${testPath}' DELIMITER ','`;
 
-// psql(testq);
+// psql(insertUsers);
+// psql(insertReviews);
+// psql(insertRooms);
 
 const execReviews = `mongoimport --db reviews --collection reviews --type csv --headerline --file ${reveiwsPath}`;
 const execRooms = `mongoimport --db reviews --collection rooms --type csv --headerline --file ${roomsPath}`;
