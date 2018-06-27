@@ -19,14 +19,14 @@ let id,
   location,
   checkIn,
   value,
-  score,
+  aggregateRate,
   userId,
   roomId,
   roomName,
   totalNumberReviews,
   user,
   room,
-  username,
+  userName,
   avatar;
 
 const reviewLine = () => {
@@ -38,10 +38,10 @@ const reviewLine = () => {
   location = faker.random.number({ min: 1, max: 5 });
   checkIn = faker.random.number({ min: 1, max: 5 });
   value = faker.random.number({ min: 1, max: 5 });
-  score = Math.floor((accuracy + communication + cleanliness + location + checkIn + value) / 6);
+  aggregateRate = Math.floor((accuracy + communication + cleanliness + location + checkIn + value) / 6);
   user = faker.random.number({ min: 0, max: 1000000 });
   room = faker.random.number({ min: 0, max: 10000000 });
-  return `${text},${date},${accuracy},${communication},${cleanliness},${location},${checkIn},${value},${score},${user},${room}`;
+  return `${text},${date},${accuracy},${communication},${cleanliness},${location},${checkIn},${value},${aggregateRate},${user},${room}`;
 };
 
 const roomLine = () => {
@@ -53,7 +53,7 @@ const roomLine = () => {
   location = faker.random.number({ min: 1, max: 5 });
   checkIn = faker.random.number({ min: 1, max: 5 });
   value = faker.random.number({ min: 1, max: 5 });
-  score = Math.floor((accuracy + communication + cleanliness + location + checkIn + value) / 6);
+  aggregateRate = Math.floor((accuracy + communication + cleanliness + location + checkIn + value) / 6);
   return `${roomName},${totalNumberReviews},${accuracy},${communication},${cleanliness},${location},${checkIn},${value}`;
 };
 
@@ -64,19 +64,20 @@ const userLine = () => {
 };
 
 const headers = {
-  reviews: 'id,text,date,accuracy,communication,cleanliness,location,checkIn,value,score,user,room\n',
-  rooms: 'id,name,accuracy,communication,cleanliness,location,checkIn,value,score\n',
-  users: 'id, username, avatar\n',
+  reviews: 'id,text,date,accuracy,communication,cleanliness,location,checkIn,value,aggregateRate,user,room\n',
+  rooms: 'id,name,accuracy,communication,cleanliness,location,checkIn,value,aggregateRate\n',
+  users: 'id, userName, avatar\n',
 };
 
 const startTime = new Date().toTimeString();
-function writeNTimes(writer, header, times) {
+
+function writeNTimes(writer, header, times, line) {
   let i = 0;
   write();
   function write() {
     let ok = true;
     do {
-      const finalLine = `${i},${reviewLine()}\n`;
+      const finalLine = `${i},${line()}\n`;
       if (i % 500000 === 0) {
         console.log('chunk', i);
       }
@@ -99,5 +100,5 @@ function writeNTimes(writer, header, times) {
   }
 }
 // writeNTimes(fs.createWriteStream('reviews.csv'), headers.reviews, 50000000);
-// writeNTimes(fs.createWriteStream('rooms.csv'), headers.rooms, 10000000);
-// writeNTimes(fs.createWriteStream('users.csv'), headers.users, 1000000);
+// writeNTimes(fs.createWriteStream('rooms.csv'), headers.rooms, 10000000, roomLine);
+// writeNTimes(fs.createWriteStream('users.csv'), headers.users, 1000000, userLine);

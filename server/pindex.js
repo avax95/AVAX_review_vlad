@@ -1,9 +1,13 @@
 const express = require('express');
+const morgan = require('morgan');
+const http = require('http');
 const path = require('path');
 const bodyParser = require('body-parser');
-const previewsRouter = require('./previews');
+const router = require('./previews');
 
 const app = express();
+
+app.use(morgan('dev'));
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -17,12 +21,17 @@ app.use((req, res, next) => {
   next();
 });
 
-app.use('/:roomId', express.static(path.join(__dirname, '../public')));
+app.use('/:id', express.static(path.join(__dirname, '../public')));
+app.get('/favicon.ico', (req, res) => res.status(204));
 
-app.use('/reviews', previewsRouter);
+app.use('/reviews', router);
 
 const PORT = process.env.PORT || 3009;
+const server = http.createServer(app);
 
-app.listen(PORT, () => {
-  console.log('server listening on port ', PORT);
-});
+module.exports = server;
+
+if (!module.parent) {
+  server.listen(PORT);
+  console.log(`reviews listening on ${PORT}`);
+}

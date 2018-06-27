@@ -20,10 +20,24 @@ const reviewSchema = mongoose.Schema({
   location: Number,
   checkIn: Number,
   value: Number,
-  score: Number,
-  user: { type: Number, field: 'id', ref: 'User' },
-  room: { type: Number, field: 'id', ref: 'Room' },
+  agregateRate: Number,
+  userName: String,
+  avatar: String,
+  room: Number,
 });
+
+// db.rooms.insert({
+//   id: 1,
+//   text: "Generic Soft Salad",
+//   accuracy: 3,
+//   communication: 4,
+//   cleanliness: 4,
+//   location: 2,
+//   checkIn: 2,
+//   value: 5,
+//   agregateRate: 3,
+//   reviews:[{id: 32425},{id: 23},{id: 456837},{id: 12345},{id: 6898765},{id:323},{id:4},{id:56},{id:2},{id:34}],
+// })
 
 const roomSchema = mongoose.Schema({
   id: { type: Number, unique: true },
@@ -34,40 +48,40 @@ const roomSchema = mongoose.Schema({
   location: Number,
   checkIn: Number,
   value: Number,
-  score: Number,
+  agregateRate: Number,
 });
 
-const userSchema = mongoose.Schema({
-  id: { type: Number, unique: true },
-  username: String,
-  avatar: String,
+roomSchema.virtual('allReviews', {
+  ref: 'Review',
+  localField: 'id',
+  foreignField: 'room',
+  justOne: false,
 });
 
+roomSchema.set('toObject', { virtuals: true });
+roomSchema.set('toJSON', { virtuals: true });
 reviewSchema.plugin(uniqueValidator);
 roomSchema.plugin(uniqueValidator);
-userSchema.plugin(uniqueValidator);
 
 const Review = mongoose.model('Review', reviewSchema);
 const Room = mongoose.model('Room', roomSchema);
-const User = mongoose.model('User', userSchema);
+// const insertReviews = (review, callback) => {
+//   const newReview = new Review({
+//     id: review.id,
+//     text: review.text,
+//     date: review.date,
+//     accuracy: review.accuracy,
+//     communication: review.communication,
+//     cleanliness: review.cleanliness,
+//     location: review.location,
+//     checkIn: review.checkIn,
+//     value: review.value,
+//     score: review.score,
+//   });
 
-const insertReviews = (review, callback) => {
-  const newReview = new Review({
-    id: review.id,
-    text: review.text,
-    date: review.date,
-    accuracy: review.accuracy,
-    communication: review.communication,
-    cleanliness: review.cleanliness,
-    location: review.location,
-    checkIn: review.checkIn,
-    value: review.value,
-    score: review.score,
-  });
-
-  Review.create(newReview, (err, data) => (err ? callback(err, null) : callback(null, data)));
-};
+//   Review.create(newReview, (err, data) => (err ? callback(err, null) : callback(null, data)));
+// };
 
 module.exports = {
-  Review, Room, User, insertReviews,
+  Review, Room,
 };

@@ -19,6 +19,7 @@ const getQueryParams = ({ pageonly, start, limit }) => {
 };
 // handle GET requests for /reviews
 router.get('/:roomId', async (req, res, next) => {
+  console.log(req);
   try {
     let { roomId } = req.params;
     roomId = parseInt(roomId, 10) + roomIdAdjustment;
