@@ -2,16 +2,8 @@ const mongoose = require('mongoose');
 const uniqueValidator = require('mongoose-unique-validator');
 
 mongoose.Promise = global.Promise;
-mongoose.connect('mongodb://localhost/reviews');
-
-const db = mongoose.connection;
-db.on('error', console.error.bind(console, 'connection error:'));
-db.once('open', () => {
-  console.log('connection open');
-});
 
 const reviewSchema = mongoose.Schema({
-  id: { type: Number, unique: true },
   text: String,
   date: Date,
   accuracy: Number,
@@ -20,28 +12,16 @@ const reviewSchema = mongoose.Schema({
   location: Number,
   checkIn: Number,
   value: Number,
-  agregateRate: Number,
+  aggregateRate: Number,
   userName: String,
   avatar: String,
-  room: Number,
+  roomId: Number,
 });
-
-// db.rooms.insert({
-//   id: 1,
-//   text: "Generic Soft Salad",
-//   accuracy: 3,
-//   communication: 4,
-//   cleanliness: 4,
-//   location: 2,
-//   checkIn: 2,
-//   value: 5,
-//   agregateRate: 3,
-//   reviews:[{id: 32425},{id: 23},{id: 456837},{id: 12345},{id: 6898765},{id:323},{id:4},{id:56},{id:2},{id:34}],
-// })
 
 const roomSchema = mongoose.Schema({
   id: { type: Number, unique: true },
-  name: String,
+  roomName: String,
+  totalNumberReviews: Number,
   accuracy: Number,
   communication: Number,
   cleanliness: Number,
@@ -51,10 +31,10 @@ const roomSchema = mongoose.Schema({
   agregateRate: Number,
 });
 
-roomSchema.virtual('allReviews', {
+roomSchema.virtual('reviews', {
   ref: 'Review',
   localField: 'id',
-  foreignField: 'room',
+  foreignField: 'roomId',
   justOne: false,
 });
 
@@ -65,23 +45,11 @@ roomSchema.plugin(uniqueValidator);
 
 const Review = mongoose.model('Review', reviewSchema);
 const Room = mongoose.model('Room', roomSchema);
-// const insertReviews = (review, callback) => {
-//   const newReview = new Review({
-//     id: review.id,
-//     text: review.text,
-//     date: review.date,
-//     accuracy: review.accuracy,
-//     communication: review.communication,
-//     cleanliness: review.cleanliness,
-//     location: review.location,
-//     checkIn: review.checkIn,
-//     value: review.value,
-//     score: review.score,
-//   });
 
-//   Review.create(newReview, (err, data) => (err ? callback(err, null) : callback(null, data)));
-// };
+const getReviews = roomId => Room.find({ id: roomId }, { _id: 0 }).populate('reviews', 'userName avatar aggregateRate text').exec();
+const postReviews = review => Review.create(review);
+const deleteReview = roomId => Review.findOneAndRemove({ roomId });
 
 module.exports = {
-  Review, Room,
+  Review, Room, getReviews, postReviews, deleteReview,
 };

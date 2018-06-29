@@ -39,9 +39,10 @@ const reviewLine = () => {
   checkIn = faker.random.number({ min: 1, max: 5 });
   value = faker.random.number({ min: 1, max: 5 });
   aggregateRate = Math.floor((accuracy + communication + cleanliness + location + checkIn + value) / 6);
-  user = faker.random.number({ min: 0, max: 1000000 });
-  room = faker.random.number({ min: 0, max: 10000000 });
-  return `${text},${date},${accuracy},${communication},${cleanliness},${location},${checkIn},${value},${aggregateRate},${user},${room}`;
+  userName = faker.name.findName();
+  avatar = `https://s3-us-west-1.amazonaws.com/nappbnbreviews/portait${Math.floor(Math.random() * 348)}.jpeg`;
+  roomId = faker.random.number({ min: 0, max: 10000000 });
+  return `${text},${date},${accuracy},${communication},${cleanliness},${location},${checkIn},${value},${aggregateRate},${userName},${avatar},${roomId}`;
 };
 
 const roomLine = () => {
@@ -54,39 +55,28 @@ const roomLine = () => {
   checkIn = faker.random.number({ min: 1, max: 5 });
   value = faker.random.number({ min: 1, max: 5 });
   aggregateRate = Math.floor((accuracy + communication + cleanliness + location + checkIn + value) / 6);
-  return `${roomName},${totalNumberReviews},${accuracy},${communication},${cleanliness},${location},${checkIn},${value}`;
-};
-
-const userLine = () => {
-  const randomName = faker.name.findName();
-  const randomUrl = `https://s3-us-west-1.amazonaws.com/nappbnbreviews/portait${Math.floor(Math.random() * 348)}.jpeg`;
-  return `${randomName},${randomUrl}\n`;
+  return `${roomName},${totalNumberReviews},${accuracy},${communication},${cleanliness},${location},${checkIn},${value},${aggregateRate}`;
 };
 
 const headers = {
-  reviews: 'id,text,date,accuracy,communication,cleanliness,location,checkIn,value,aggregateRate,user,room\n',
-  rooms: 'id,name,accuracy,communication,cleanliness,location,checkIn,value,aggregateRate\n',
-  users: 'id, userName, avatar\n',
+  reviews: 'text,date,accuracy,communication,cleanliness,location,checkIn,value,aggregateRate,userName,avatar,roomId\n',
+  rooms: 'id,roomName,totalNumberReviews,accuracy,communication,cleanliness,location,checkIn,value,aggregateRate\n',
 };
 
-const startTime = new Date().toTimeString();
-
-function writeNTimes(writer, header, times, line) {
+function writeNTimes(writer, header, times, line, needId = true) {
   let i = 0;
   write();
   function write() {
     let ok = true;
     do {
-      const finalLine = `${i},${line()}\n`;
+      const finalLine = needId ? `${i},${line()}\n` : `${line()}\n`;
       if (i % 500000 === 0) {
-        console.log('chunk', i);
+        console.log('chunk', i, finalLine);
       }
       if (i === 0) {
         ok = writer.write(header);
       }
       if (i === times) {
-        const endTime = new Date().toTimeString();
-        console.log(startTime, endTime);
         writer.write(finalLine);
         writer.end();
       } else {
@@ -99,6 +89,5 @@ function writeNTimes(writer, header, times, line) {
     }
   }
 }
-// writeNTimes(fs.createWriteStream('reviews.csv'), headers.reviews, 50000000);
-// writeNTimes(fs.createWriteStream('rooms.csv'), headers.rooms, 10000000, roomLine);
-// writeNTimes(fs.createWriteStream('users.csv'), headers.users, 1000000, userLine);
+// writeNTimes(fs.createWriteStream('reviews.csv'), headers.reviews, 50000000, reviewLine, false);
+writeNTimes(fs.createWriteStream('rooms.csv'), headers.rooms, 10000000, roomLine);
