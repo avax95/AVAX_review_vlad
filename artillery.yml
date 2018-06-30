@@ -4,15 +4,15 @@ config:
   - duration: 10
     arrivalRate: 1
     name: "Warm up the application"
-  - duration: 10
+  - duration: 20
     arrivalRate: 1
-    rampTo: 10
+    rampTo: 30
     name: "jump to max load"
-  - duration: 10
-    arrivalRate: 10
+  - duration: 30
+    arrivalRate: 30
     name: "keep at the max load"
-  - duration: 10
-    arrivalRate: 10
+  - duration: 20
+    arrivalRate: 30
     rampTo: 1
     name: "calm down"
   defaults:
@@ -25,7 +25,7 @@ scenarios:
             - get:
                 url: "/{{$randomNumber(1, 10000000)}}"
             - get:
-                url: "/reviews/{{$randomNumber(1, 10000000)}}"
+                url: "/reviews/{{$randomNumber(1, 100000)}}"
             - post:
                 url: "/reviews/{{$randomNumber(1, 10000000)}}"
             - delete:

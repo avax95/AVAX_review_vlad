@@ -6,7 +6,7 @@ function to(promise) {
     .catch(err => [err]);
 }
 
-function newReview(roomId) {
+const newReview = (roomId) => {
   const review = {
     text: faker.lorem.paragraph(),
     date: new Date(),
@@ -22,7 +22,7 @@ function newReview(roomId) {
   };
   review.aggregateRate = Math.floor((review.accuracy + review.communication + review.cleanliness + review.location + review.checkIn + review.value) / 6);
   return review;
-}
+};
 module.exports = {
   to,
   newReview,

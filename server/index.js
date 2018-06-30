@@ -1,19 +1,21 @@
-require('newrelic');
+const newrelic = require('newrelic');
 const mongoose = require('mongoose');
 const express = require('express');
 const morgan = require('morgan');
 const http = require('http');
 const path = require('path');
 const bodyParser = require('body-parser');
-const router = require('./previews'); 
+const router = require('./previews');
 
 const app = express();
+app.locals.newrelic = newrelic;
+
 mongoose.connect('mongodb://localhost/reviews');
 
-const db = mongoose.connection;
-db.on('error', console.error.bind(console, 'connection error:'));
-db.once('open', () => {
-  console.log('connection open');
+const mongoClient = mongoose.connection;
+mongoClient.on('error', console.error.bind(console, 'MongoDB connection error:'));
+mongoClient.once('open', () => {
+  console.log('MongoDB connection open');
 });
 
 app.use(morgan('dev'));
