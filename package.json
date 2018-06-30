@@ -64,6 +64,8 @@
     "mini-css-extract-plugin": "^0.4.1",
     "newrelic": "^4.2.0",
     "nodemon": "^1.17.5",
+    "superagent": "^3.8.3",
+    "supertest": "^3.1.0",
     "webpack": "^4.14.0",
     "webpack-cli": "^2.1.5"
   },

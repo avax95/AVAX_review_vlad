@@ -20,15 +20,27 @@ const getQueryParams = ({ pageonly, start, limit }) => {
   return result;
 };
 
-router.get('/:roomId', async (req, res, next) => {
+const cache = async (req, res, next) => {
+  try {
+    const { roomId } = req.params;
+    const data = await clientRedis.get(roomId);
+    if (data != null) {
+      res.send(data);
+    } else {
+      next();
+    }
+  } catch (err) {
+    next();
+  }
+};
+
+router.get('/:roomId', cache, async (req, res, next) => {
   try {
     let { roomId } = req.params;
     roomId = parseInt(roomId, 10) + roomIdAdjustment;
-    const roomReviews = await clientRedis.exists(roomId) === 1 ?
-      await clientRedis.get(roomId) :
-      await clientMongo.getReviews(roomId);
-    clientRedis.setex(roomId, 200, roomReviews);
-    typeof roomReviews === 'object' ? res.status(200).json(roomReviews) : res.status(200).send(roomReviews);
+    const roomReviews = await clientMongo.getReviews(roomId);
+    clientRedis.setex(roomId, 1, roomReviews);
+    res.status(200).json(roomReviews);
   } catch (err) {
     next(err);
   }
