@@ -1,0 +1,50 @@
+{
+  "config": {
+    "target": "http://localhost:3009",
+    "phases": [
+      {
+        "duration": 10,
+        "arrivalRate": 1,
+        "name": "Warm up the application"
+      },
+      {
+        "duration": 20,
+        "arrivalRate": 1,
+        "rampTo": 30,
+        "name": "jump to max load"
+      },
+      {
+        "duration": 30,
+        "arrivalRate": 30,
+        "name": "keep at the max load"
+      },
+      {
+        "duration": 20,
+        "arrivalRate": 30,
+        "rampTo": 1,
+        "name": "calm down"
+      }
+    ],
+    "defaults": {
+      "headers": {
+        "x-my-service-auth": "987401838271002188298567"
+      }
+    }
+  },
+  "scenarios": [
+    {
+      "flow": [
+        {
+          "loop": [
+            {
+              "get": {
+                "url": "/reviews/{{$randomNumber(1, 100000)}}"
+              }
+            }
+          ],
+          "count": 4
+        }
+      ]
+    }
+  ]
+}
