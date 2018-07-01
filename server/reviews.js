@@ -40,7 +40,7 @@ router.get('/:roomId', async (req, res, next) => {
 });
 
 // handle POST requests for /rooms
-router.post('/:roomId', async (req, res, next) => {
+router.post(':roomId', async (req, res, next) => {
   try {
     let { roomId } = req.params;
     roomId += roomIdAdjustment;

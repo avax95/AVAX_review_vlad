@@ -1,14 +1,14 @@
 config:
   target: "http://localhost:3009"
   phases:
-  - duration: 10
+  - duration: 20
     arrivalRate: 1
     name: "Warm up the application"
   - duration: 20
     arrivalRate: 1
     rampTo: 30
     name: "jump to max load"
-  - duration: 30
+  - duration: 60
     arrivalRate: 30
     name: "keep at the max load"
   - duration: 20
@@ -23,11 +23,11 @@ scenarios:
     - flow:
         - loop:
             - get:
-                url: "/{{$randomNumber(1, 10000000)}}"
+                url: "/{{$randomNumber(9000000, 10000000)}}"
             - get:
-                url: "/reviews/{{$randomNumber(1, 100000)}}"
+                url: "/reviews/{{$randomNumber(9000000, 10000000)}}"
             - post:
-                url: "/reviews/{{$randomNumber(1, 10000000)}}"
+                url: "/reviews/post/{{$randomNumber(9000000, 10000000)}}"
             - delete:
-                url: "/reviews/{{$randomNumber(1, 10000000)}}"
-          count: 100
+                url: "/reviews/{{$randomNumber(9000000, 10000000)}}"
+          count: 5
