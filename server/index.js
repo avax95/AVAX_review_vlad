@@ -8,7 +8,6 @@ const bodyParser = require('body-parser');
 const router = require('./previews');
 
 const app = express();
-app.locals.newrelic = newrelic;
 
 mongoose.connect('mongodb://localhost/reviews');
 

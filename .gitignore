@@ -21,6 +21,14 @@ lib-cov
 # Coverage directory used by tools like istanbul
 coverage
 
+# newrelic
+newrelic.js
+newrelic_agent.log
+nrdiag
+nrdiag-filelist.txt
+nrdiag-output.json
+nrdiag-output.zip
+
 # Grunt intermediate storage (http://gruntjs.com/creating-plugins#storing-task-files)
 .grunt
 

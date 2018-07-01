@@ -31,12 +31,12 @@ const roomSchema = mongoose.Schema({
   agregateRate: Number,
 });
 
-roomSchema.virtual('reviews', {
-  ref: 'Review',
-  localField: 'id',
-  foreignField: 'roomId',
-  justOne: false,
-});
+// roomSchema.virtual('reviews', {
+//   ref: 'Review',
+//   localField: 'id',
+//   foreignField: 'roomId',
+//   justOne: false,
+// });
 
 roomSchema.set('toObject', { virtuals: true });
 roomSchema.set('toJSON', { virtuals: true });
@@ -46,10 +46,12 @@ roomSchema.plugin(uniqueValidator);
 const Review = mongoose.model('Review', reviewSchema);
 const Room = mongoose.model('Room', roomSchema);
 
-const getReviews = roomId => Room.find({ id: roomId }, { _id: 0 }).populate('reviews', 'userName avatar aggregateRate text').exec();
+const getRoomInfo = roomId => Room.find({ id: roomId }, '-_id -reviews').exec();
+const getReviews = roomId => Review.find({ roomId }, '-_id -accuracy -communication -cleanliness -location -checkIn -value -roomId -__v').sort({ date: 'desc' }).exec();
 const postReviews = review => Review.create(review);
 const deleteReview = roomId => Review.findOneAndRemove({ roomId });
 
 module.exports = {
-  Review, Room, getReviews, postReviews, deleteReview,
+  Review, Room, getReviews, getRoomInfo, postReviews, deleteReview,
 };
+

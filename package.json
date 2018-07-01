@@ -13,7 +13,7 @@
     "node": ">=10.0.0"
   },
   "scripts": {
-    "test": "jest",
+    "test": "jest --verbose --coverage",
     "react-dev": "webpack -d --watch",
     "dev-server": "nodemon server/index.js",
     "start": "node server/index.js"

@@ -17,11 +17,11 @@ const execRooms = `mongoimport --db reviews --collection rooms --type csv --head
 //   console.log(`stderr: ${stderr}`);
 // });
 
-exec(execRooms, (err, stdout, stderr) => {
-  if (err) {
-    console.log('err: ', err);
-    return;
-  }
-  console.log(`stdout: ${stdout}`);
-  console.log(`stderr: ${stderr}`);
-});
+// exec(execRooms, (err, stdout, stderr) => {
+//   if (err) {
+//     console.log('err: ', err);
+//     return;
+//   }
+//   console.log(`stdout: ${stdout}`);
+//   console.log(`stderr: ${stderr}`);
+// });
