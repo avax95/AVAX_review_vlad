@@ -9,7 +9,9 @@ const router = require('./previews');
 
 const app = express();
 
-mongoose.connect('mongodb://localhost/reviews');
+// mongoose.connect('mongodb://localhost/reviews');
+const host = process.env.MNG_HOST || 'localhost';
+mongoose.connect(`mongodb://${host}/reviews`);
 
 const mongoClient = mongoose.connection;
 mongoClient.on('error', console.error.bind(console, 'MongoDB connection error:'));
@@ -31,9 +33,19 @@ app.use((req, res, next) => {
   next();
 });
 
-app.use('/:id', express.static(path.join(__dirname, '../public')));
 app.get('/favicon.ico', (req, res) => res.status(204));
 
+app.get('/loaderio-eeadf863db02504d34fc369cc7b3f740/', (req, res) => {
+  res.sendFile(path.join(__dirname, '../loaderio-eeadf863db02504d34fc369cc7b3f740.txt'));
+});
+app.get('/loaderio-eeadf863db02504d34fc369cc7b3f740.txt', (req, res) => {
+  res.sendFile(path.join(__dirname, '../loaderio-eeadf863db02504d34fc369cc7b3f740.txt'));
+});
+app.get('/loaderio-eeadf863db02504d34fc369cc7b3f740.html', (req, res) => {
+  res.sendFile(path.join(__dirname, '../loaderio-eeadf863db02504d34fc369cc7b3f740.txt'));
+});
+
+app.use('/:id', express.static(path.join(__dirname, '../public')));
 app.use('/reviews', router);
 
 const PORT = process.env.PORT || 3009;

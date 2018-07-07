@@ -41,7 +41,7 @@ const reviewLine = () => {
   aggregateRate = Math.floor((accuracy + communication + cleanliness + location + checkIn + value) / 6);
   userName = faker.name.findName();
   avatar = `https://s3-us-west-1.amazonaws.com/nappbnbreviews/portait${Math.floor(Math.random() * 348)}.jpeg`;
-  roomId = faker.random.number({ min: 0, max: 10000000 });
+  roomId = faker.random.number({ min: 1100000, max: 3000000 });
   return `${text},${date},${accuracy},${communication},${cleanliness},${location},${checkIn},${value},${aggregateRate},${userName},${avatar},${roomId}`;
 };
 
@@ -64,7 +64,7 @@ const headers = {
 };
 
 function writeNTimes(writer, header, times, line, needId = true) {
-  let i = 0;
+  let i = 1100000;
   write();
   function write() {
     let ok = true;
@@ -73,7 +73,7 @@ function writeNTimes(writer, header, times, line, needId = true) {
       if (i % 500000 === 0) {
         console.log('chunk', i, finalLine);
       }
-      if (i === 0) {
+      if (i === 1100000) {
         ok = writer.write(header);
       }
       if (i === times) {
@@ -89,5 +89,5 @@ function writeNTimes(writer, header, times, line, needId = true) {
     }
   }
 }
-// writeNTimes(fs.createWriteStream('reviews.csv'), headers.reviews, 50000000, reviewLine, false);
-writeNTimes(fs.createWriteStream('rooms.csv'), headers.rooms, 10000000, roomLine);
+// writeNTimes(fs.createWriteStream('reviews.csv'), headers.reviews, 30000000, reviewLine, false);
+writeNTimes(fs.createWriteStream('rooms.csv'), headers.rooms, 3000000, roomLine);

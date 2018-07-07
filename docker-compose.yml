@@ -1,0 +1,29 @@
+version: "3"
+services:
+
+  environment:
+
+  reviews:
+    build: .
+    depends_on:
+      - mongo
+      - redis
+    environment:
+
+    ports: 
+      - "3009:3009"
+
+  mongo:
+    image: mongo:latest
+    # restart: always
+    # environment:
+    #   - MONGO_DATA_DIR=/data/db
+    #   - MONGO_LOG_DIR=/dev/null
+  redis:
+    image: redis:latest
+    command: ["redis-server", "--appendonly", "yes"]
+    hostname: redis
+    # networks:
+    #   - redis-net
+    # volumes:
+    #   - redis-data:/data

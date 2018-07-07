@@ -38,3 +38,7 @@ dist/
 public/
 database/config.js
 roadmap/
+
+Docker
+dockerfile
+.dockerignore

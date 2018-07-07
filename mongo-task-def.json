@@ -1,0 +1,23 @@
+{
+    "family": "AVAX",
+    "containerDefinitions": [
+        {
+            "name": "mongo",
+            "image": "630240526130.dkr.ecr.us-east-1.amazonaws.com/mongo",
+            "cpu": 10,
+            "memory": 500,
+            "portMappings": [
+                {
+                    "containerPort": 80,
+                    "hostPort": 80
+                }
+            ],
+            "entryPoint": [
+                "/usr/sbin/apache2",
+                "-D",
+                "FOREGROUND"
+            ],
+            "essential": true
+        }
+    ]
+}
